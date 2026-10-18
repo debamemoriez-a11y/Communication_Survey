@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Communication Style Self-Reflection Survey</title>
+<style>
+:root{--navy:#15345b;--muted:#5c6b7b;--line:#dce5ef;--bg:#f4f8fc;--D:#c94747;--i:#d99a13;--S:#159879;--C:#2877c7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:#20334b;line-height:1.5}
+main{max-width:850px;margin:0 auto;padding:22px 14px 50px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:0 5px 18px #193c5c0c}
+h1,h2,h3{color:var(--navy);line-height:1.2}h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:.3em 0}h2{margin-top:0}p{color:var(--muted)}
+.brand{display:flex;gap:10px;margin-bottom:16px}.letter{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:white;font-weight:bold;font-size:1.25rem}.D{background:var(--D)}.i{background:var(--i)}.S{background:var(--S)}.C{background:var(--C)}
+button{border:0;border-radius:11px;padding:12px 18px;font-size:1rem;font-weight:700;cursor:pointer;background:#087fa0;color:white}button.secondary{background:white;color:var(--navy);border:1px solid #a8bacb}button:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-top:24px}.progress-wrap{height:9px;background:#e8eef5;border-radius:10px;overflow:hidden;margin:14px 0 22px}.progress{height:100%;width:0;background:#0797b6;transition:width .2s}
+.qnum{font-size:.9rem;font-weight:700;color:#087fa0}.question{font-size:1.3rem;font-weight:700;color:var(--navy);margin:12px 0 20px}
+.choices{display:grid;gap:10px}.choice{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:12px;cursor:pointer;color:#20334b;background:#fff}.choice:hover{border-color:#83b8ca;background:#f8fcff}.choice input{margin-top:5px;accent-color:#087fa0;transform:scale(1.15)}.choice.selected{border-color:#087fa0;background:#eefaff}
+.scale{font-size:.84rem;color:var(--muted);margin-top:12px}
+.hidden{display:none!important}.scoregrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:20px 0}.scorecard{border:1px solid var(--line);border-radius:14px;padding:16px}.scorehead{display:flex;justify-content:space-between;gap:8px;font-weight:bold}.bar{height:10px;background:#e9eef4;border-radius:20px;margin:12px 0;overflow:hidden}.fill{height:100%;border-radius:20px}.profile{border-radius:14px;padding:16px;margin:12px 0}.profile h3{margin:0 0 8px}.tag{display:inline-block;padding:4px 9px;border-radius:20px;background:#eef3f8;color:#344a60;font-size:.85rem;font-weight:bold}
+.note{background:#f1f7fb;border-radius:12px;padding:14px;margin-top:16px}.small{font-size:.88rem}.footer{font-size:.82rem;text-align:center;margin-top:20px;color:#6b7b8c}
+@media(max-width:560px){main{padding:12px 9px 30px}.card{padding:18px}.scoregrid{grid-template-columns:1fr}.question{font-size:1.15rem}.actions button{flex:1}}
+@media print{body{background:#fff}.actions,.progress-wrap,.footer{display:none!important}main{max-width:none;padding:0}.card{box-shadow:none;border:0}.hidden{display:none!important}}
+</style>
+</head>
+<body>
+<main>
+<section id="welcome" class="card">
+  <div class="brand"><span class="letter D">D</span><span class="letter i">i</span><span class="letter S">S</span><span class="letter C">C</span></div>
+  <span class="tag">ALT workshop · self-reflection</span>
+  <h1>How Do I Communicate?</h1>
+  <p>This short survey helps you reflect on how you communicate with colleagues and students, including when team-teaching with an OTE.</p>
+  <div class="note"><strong>How it works</strong><br>Answer 20 statements. Your four scores and personal reflection tips will appear immediately when you finish.</div>
+  <p><strong>Rating scale</strong><br>1 — Not at all like me · 2 — A little like me · 3 — Sometimes like me · 4 — Mostly like me · 5 — Very much like me</p>
+  <p class="small">There are no right or wrong answers. Everyone can use all four styles, and communication can change depending on the situation. This is an informal workshop tool inspired by DiSC, not an official or validated DiSC assessment.</p>
+  <button id="startBtn">Start survey →</button>
+</section>
+
+<section id="survey" class="card hidden" aria-live="polite">
+  <div class="qnum" id="qnum">Question 1 of 20</div>
+  <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+  <div class="question" id="question"></div>
+  <div class="choices" id="choices"></div>
+  <div class="scale">Choose the answer that best describes how you usually communicate at work.</div>
+  <div class="actions"><button class="secondary" id="backBtn">← Back</button><button id="nextBtn" disabled>Next →</button></div>
+</section>
+
+<section id="results" class="card hidden">
+  <span class="tag">Your personal results</span>
+  <h1>Your Communication Profile</h1>
+  <p>Your highest score suggests the communication preference you may use most naturally. Close scores can indicate a blend of styles.</p>
+  <div id="scoregrid" class="scoregrid"></div>
+  <div id="leaderIntro" class="note"></div>
+  <h2 style="margin-top:24px">What each style may look like</h2>
+  <div id="profiles"></div>
+  <h2 style="margin-top:24px">Reflect on team teaching</h2>
+  <div class="note">
+    <p><strong>1. I communicate best when…</strong><br>What conditions help you share ideas and work effectively with your OTE?</p>
+    <p><strong>2. I can adapt my communication by…</strong><br>What could you change when a colleague communicates differently from you?</p>
+    <p><strong>3. I can help students communicate by…</strong><br>How can you use your strengths to encourage quieter students and make it safer to make mistakes?</p>
+    <p><strong>4. One action I will try this week is…</strong><br>Choose one specific change you can make in a lesson or planning conversation.</p>
+  </div>
+  <p class="small">Privacy: your answers are processed in this page in your browser. This standalone version does not send your responses to the workshop facilitator or store them on a server. If you want to keep your results, use the buttons below.</p>
+  <div class="actions"><button class="secondary" id="copyBtn">Copy my results</button><button class="secondary" id="printBtn">Print / Save as PDF</button><button id="restartBtn">Start again ↻</button></div>
+</section>
+<div class="footer">Communication Style Self-Reflection · DiSC-inspired, not an official assessment</div>
+</main>
+<script>
+const questions = [
+["I prefer to get straight to the point when discussing a task.","D"],
+["I feel comfortable taking the lead when a decision needs to be made.","D"],
+["I focus on finding solutions rather than spending too much time discussing problems.","D"],
+["I communicate my expectations clearly and confidently.","D"],
+["I become impatient when conversations take too long to reach a decision.","D"],
+["I enjoy sharing ideas and stories when talking with others.","i"],
+["I bring energy and enthusiasm to conversations and discussions.","i"],
+["I enjoy brainstorming and developing ideas with other people.","i"],
+["I encourage others by recognising their ideas and contributions.","i"],
+["I sometimes talk through my ideas as I develop them.","i"],
+["I take time to listen and make sure everyone feels heard.","S"],
+["I try to maintain harmony when there is disagreement in a team.","S"],
+["I prefer to think carefully before responding to a question or suggestion.","S"],
+["I offer support when a colleague is uncertain or having difficulty.","S"],
+["I find it difficult to disagree openly if I think it may upset someone.","S"],
+["I prefer to have accurate information before making a decision.","C"],
+["I organise my thoughts carefully before explaining an idea.","C"],
+["I pay attention to details and check that instructions are clear.","C"],
+["I prefer to use facts, examples, or evidence to explain my opinions.","C"],
+["I like to have clear instructions, expectations, and deadlines.","C"]
+];
+const info = {
+ D:{name:"Direct",color:"#c94747",summary:"You may prefer clear, direct communication, quick decisions and practical solutions.",strength:"You can help a team clarify goals, make decisions and keep tasks moving.",challenge:"You may sometimes sound rushed or leave too little space for others to respond.",tip:"Pause to invite your OTE’s view, ask one open question, and check that everyone agrees on the next step."},
+ i:{name:"Expressive",color:"#d99a13",summary:"You may enjoy sharing ideas, building relationships and bringing energy to conversations.",strength:"You can help a team brainstorm activities, build rapport and make lessons engaging.",challenge:"You may sometimes move quickly between ideas or overlook details and deadlines.",tip:"Finish planning conversations by agreeing who will do what and by when."},
+ S:{name:"Supportive",color:"#159879",summary:"You may value listening, cooperation and maintaining positive working relationships.",strength:"You can help colleagues feel heard and create a calm, supportive classroom.",challenge:"You may sometimes avoid disagreement or delay raising a concern.",tip:"Use a respectful sentence starter such as, “Could we consider another option?”"},
+ C:{name:"Analytical",color:"#2877c7",summary:"You may prefer accurate information, clear instructions and careful preparation.",strength:"You can help a team organise lesson details, check language targets and plan assessment carefully.",challenge:"You may sometimes overanalyse or find sudden changes frustrating.",tip:"Identify which details matter most and stay open to trying a small new approach."}
+};
+let current=0; const answers=Array(questions.length).fill(null);
+const $=id=>document.getElementById(id);
+function show(id){["welcome","survey","results"].forEach(x=>$(x).classList.toggle("hidden",x!==id));window.scrollTo({top:0,behavior:"smooth"});}
+function renderQuestion(){
+ const [q]=questions[current]; $("qnum").textContent=`Question ${current+1} of ${questions.length}`;
+ $("progress").style.width=`${(current+1)/questions.length*100}%`; $("question").textContent=q;
+ $("choices").innerHTML="";
+ const labels=["1 — Not at all like me","2 — A little like me","3 — Sometimes like me","4 — Mostly like me","5 — Very much like me"];
+ labels.forEach((label,index)=>{
+   const value=index+1, el=document.createElement("label");el.className="choice"+(answers[current]===value?" selected":"");
+   const radio=document.createElement("input");radio.type="radio";radio.name="answer";radio.value=value;radio.checked=answers[current]===value;
+   radio.addEventListener("change",()=>{answers[current]=value;renderQuestion();});
+   const span=document.createElement("span");span.textContent=label;el.append(radio,span);$("choices").append(el);
+ });
+ $("backBtn").disabled=current===0;
+ $("nextBtn").disabled=answers[current]===null;
+ $("nextBtn").textContent=current===questions.length-1?"See my results →":"Next →";
+}
+function getScores(){const s={D:0,i:0,S:0,C:0};questions.forEach((q,n)=>s[q[1]]+=answers[n]||0);return s;}
+function showResults(){
+ const s=getScores(), max=Math.max(...Object.values(s)), leaders=Object.keys(s).filter(k=>s[k]===max);
+ $("scoregrid").innerHTML="";
+ ["D","i","S","C"].forEach(k=>{
+  const card=document.createElement("div");card.className="scorecard";
+  card.innerHTML=`<div class="scorehead"><span>${k} — ${info[k].name}</span><span>${s[k]} / 25</span></div><div class="bar"><div class="fill" style="width:${s[k]*4}%;background:${info[k].color}"></div></div><div class="small">${info[k].summary}</div>`;
+  $("scoregrid").append(card);
+ });
+ $("leaderIntro").innerHTML=`<strong>Your strongest ${leaders.length===1?"communication preference is":"communication preferences are"}: ${leaders.map(k=>k+" — "+info[k].name).join(" and ")}.</strong><br>${leaders.map(k=>info[k].strength).join(" ") }<br><br>These scores are a starting point for reflection, not a fixed label.`;
+ $("profiles").innerHTML="";
+ ["D","i","S","C"].forEach(k=>{
+  const d=info[k], div=document.createElement("div");div.className="profile";div.style.background=d.color+"18";div.style.borderLeft="5px solid "+d.color;
+  div.innerHTML=`<h3 style="color:${d.color}">${k} — ${d.name}</h3><p><strong>Possible strength:</strong> ${d.strength}</p><p><strong>Watch for:</strong> ${d.challenge}</p><p><strong>Try this:</strong> ${d.tip}</p>`;
+  $("profiles").append(div);
+ });
+ window.resultText=`My Communication Profile\n${["D","i","S","C"].map(k=>`${k} — ${info[k].name}: ${s[k]}/25`).join("\n")}\nStrongest preference(s): ${leaders.map(k=>k+" — "+info[k].name).join(", ")}\n\n${leaders.map(k=>info[k].summary+"\nTry this: "+info[k].tip).join("\n\n")}\n\nReflection: One action I will try this week is ____________________.`;
+ show("results");
+}
+$("startBtn").addEventListener("click",()=>{current=0;show("survey");renderQuestion();});
+$("backBtn").addEventListener("click",()=>{if(current>0){current--;renderQuestion();}});
+$("nextBtn").addEventListener("click",()=>{if(answers[current]===null)return;if(current<questions.length-1){current++;renderQuestion();}else showResults();});
+$("restartBtn").addEventListener("click",()=>{current=0;answers.fill(null);show("welcome");});
+$("printBtn").addEventListener("click",()=>window.print());
+$("copyBtn").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(window.resultText);$("copyBtn").textContent="Copied!";setTimeout(()=>$("copyBtn").textContent="Copy my results",1600);}catch(e){const t=document.createElement("textarea");t.value=window.resultText;document.body.append(t);t.select();document.execCommand("copy");t.remove();$("copyBtn").textContent="Copied!";}});
+</script>
+</body>
+</html>
